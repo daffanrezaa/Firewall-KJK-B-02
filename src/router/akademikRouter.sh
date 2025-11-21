@@ -6,7 +6,7 @@ f1/0 (Ke Bawah/LAN): 10.20.20.1
 enable
 configure terminal
 hostname AkademikRouter
-no ip domain-lookup
+ip domain-lookup
 
 # ! --- 1. Jalur ke ATAS (Ke Core) ---
 interface FastEthernet0/0
@@ -35,7 +35,8 @@ router ospf 1
 ip dhcp pool POOL_AKADEMIK
  network 10.20.20.0 255.255.255.0
  default-router 10.20.20.1
- dns-server 8.8.8.8
+ no dns-server 8.8.8.8
+ dns-server 192.168.122.1
  exit
 
 #! --- Simpan ---

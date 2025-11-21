@@ -9,7 +9,7 @@ f2/1 (Ke Admin): 10.20.99.17
 enable
 configure terminal
 hostname CoreRouter-Firewall
-no ip domain-lookup
+ip domain-lookup
 
 # ! --- 1. KONFIGURASI IP ADDRESS ---
 

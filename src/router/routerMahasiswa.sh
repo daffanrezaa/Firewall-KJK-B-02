@@ -1,7 +1,7 @@
 enable
 configure terminal
 hostname RouterMahasiswa
-no ip domain-lookup
+ip domain-lookup
 
 # ! --- 1. Setting Jalur ke ATAS (Ke CoreRouter) ---
 # ! Core pakai 10.20.99.5, jadi kita pakai pasangannya (.6)
@@ -31,7 +31,8 @@ router ospf 1
 ip dhcp pool POOL_MHS
  network 10.20.10.0 255.255.255.0
  default-router 10.20.10.1
- dns-server 8.8.8.8
+ no dns-server 8.8.8.8
+ dns-server 192.168.122.1
  exit
 
 # ! --- Simpan ---

@@ -5,7 +5,7 @@ f1/0 -> Ke Bawah (Core Router).
 
 # config edge router
 configure terminal
-no ip domain-lookup
+ip domain-lookup
 
 # --- 2. Setting Interface ke INTERNET (Atas) ---
 interface FastEthernet0/0
@@ -35,7 +35,8 @@ interface FastEthernet1/0
 ip dhcp pool POOL_GUEST
  network 10.20.50.0 255.255.255.0
  default-router 10.20.50.1
- dns-server 8.8.8.8
+ no dns-server 8.8.8.8
+ dns-server 192.168.122.1
  exit
 
 # --- 5. Setting Routing OSPF (Agar Core tau jalan ke Internet) ---
