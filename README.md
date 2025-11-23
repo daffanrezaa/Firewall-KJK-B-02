@@ -64,3 +64,96 @@ Keamanan diterapkan menggunakan **Cisco Extended ACL** pada Core Router untuk me
     * Subnet Admin tidak boleh diakses oleh zona manapun (kecuali return traffic).
 
 ---
+
+# 1. Keamanan yang Seimbang untuk Jaringan Kampus
+
+## Definisi Keamanan
+Keamanan yang seimbang untuk jaringan kampus adalah kebijakan yang melindungi data sensitif tanpa menghalangi kolaborasi antar departemen. Sistem keamanan harus cukup ketat untuk mencegah serangan, namun fleksibel untuk mendukung interaksi antar stakeholder (mahasiswa, akademik, admin).
+
+## Akses yang Diperbolehkan
+
+### Mahasiswa:
+- **Akses**: Web server riset (Port 80) dan internet.
+- **Dilarang**: Akses ke subnet Admin dan database akademik.
+
+### Akademik:
+- **Akses**: Server riset, database akademik.
+- **Dilarang**: Akses ke subnet Admin.
+
+### Admin:
+- **Akses**: Hanya dapat diakses oleh petugas admin dengan pengaturan sangat ketat.
+- **Dilarang**: Akses dari zona lainnya, kecuali return traffic.
+
+### Riset & IoT:
+- **Akses**: Server riset dan internet.
+- **Dilarang**: Akses ke subnet Admin dan database akademik.
+
+## Kebijakan Keamanan
+- **Guest Network**: Terisolasi dari jaringan internal, hanya diizinkan mengakses internet.
+  - **ACL**: `Dilarang mengakses jaringan internal (10.20.0.0/16)`, hanya boleh mengakses **internet**.
+  
+- **ACL dan Firewall**:
+  - Menggunakan **Cisco Extended ACL** untuk membatasi akses antar subnet, memastikan perlindungan maksimal tanpa menghambat kolaborasi.
+  - Mengizinkan akses hanya ke layanan yang relevan untuk masing-masing departemen.
+
+# 2. Pertahanan Berlapis untuk Mengatasi Serangan Internal
+
+**Serangan yang Diuji:**
+1. **Port Scanning** (Guest dan Mahasiswa)
+2. **Brute Force SSH**
+3. **Database Access Attempt**
+4. **DoS (SYN Flood, ICMP Flood)**
+5. **Traceroute, Fragmentation Attacks**
+
+**Desain Sistem Pertahanan Berlapis:**
+
+1. **Perimeter**:  
+   **Firewall** dan **Cisco ACL** untuk mengisolasi **Guest** dan membatasi akses **Mahasiswa** dan **Akademik** ke **Admin** dan **Database Akademik**.  
+   - **Hasil Uji**: Port scanning dari **Guest** dan **Mahasiswa** diblokir, akses ke **Internet** diizinkan.
+
+2. **Deteksi**:  
+   **IDS** untuk mendeteksi **port scanning**, **SYN flood**, dan **ICMP flood**.  
+   - **Hasil Uji**: **SYN flood** dan **Traceroute** ke **Admin** diblokir.
+
+3. **Mitigasi**:  
+   **Rate Limiting** dan **Firewall** untuk mencegah **DoS**.  
+   - **Hasil Uji**: **SYN flood** ke **Admin** diblokir, **ICMP flood** dibatasi.
+
+4. **Perlindungan Akses**:  
+   **Autentikasi dua faktor** dan **least privilege** untuk akses ke **Admin**, **Database**, dan **Server Riset**.  
+   - **Hasil Uji**: **SSH Brute Force** dan **Database Access Attempts** diblokir.
+
+**Bukti dan Hasil Simulasi**:  
+Uji coba menunjukkan bahwa serangan seperti **port scanning**, **DoS**, dan **SSH brute force** berhasil diblokir sesuai dengan kebijakan **ACL** dan **Firewall** yang diterapkan.
+
+1. **Port Scanning** :
+   - Attack 1 : Scan ke server admin
+     
+     <img width="600" height="238" alt="Screenshot 2025-11-23 203517" src="https://github.com/user-attachments/assets/303a1dd9-f02a-4ab6-89f9-0683253e2c7c" />
+
+   - Attack 2 : Scan ke server riset
+     
+     <img width="598" height="197" alt="Screenshot 2025-11-23 203556" src="https://github.com/user-attachments/assets/70134329-b3ce-4e32-a2e8-04df9269a804" />
+
+
+2. **DoS** :
+   - Attack 1 : SYN flood ke Admin server
+     
+     <img width="552" height="144" alt="Screenshot 2025-11-23 203730" src="https://github.com/user-attachments/assets/35e1659e-dec3-4b0d-848d-5a00792230b1" />
+
+   - Attack 2 : SYN flood ke DB port 3306
+     
+     <img width="565" height="138" alt="Screenshot 2025-11-23 203755" src="https://github.com/user-attachments/assets/f0894e00-2dc3-425e-a613-9798590ac693" />
+
+3. **SSH Brute Force** :
+   - Attack 1 : SSH ke DB Akademik
+     
+     <img width="565" height="98" alt="Screenshot 2025-11-23 203858" src="https://github.com/user-attachments/assets/58602807-a262-412f-bc55-5f765b181403" />
+
+   - Attack 2 : SSH ke Server Admin
+     
+      <img width="528" height="84" alt="Screenshot 2025-11-23 203905" src="https://github.com/user-attachments/assets/12c1e9f4-b6c9-4f75-8083-60763749e245" />
+
+
+## Kesimpulan
+Desain keamanan ini bertujuan menciptakan lingkungan yang aman namun fleksibel, dengan membatasi akses yang tidak sah dan mendukung kolaborasi antar departemen. Kebijakan **ACL** dan **Firewall** yang terkonfigurasi dengan baik menjadi kunci utama dalam mendukung kebijakan ini.
