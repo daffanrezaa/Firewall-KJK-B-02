@@ -268,7 +268,7 @@ ACL Entries: 15 rules (efficient, no redundancy)
 ## Kesimpulan
 Desain keamanan ini bertujuan menciptakan lingkungan yang aman namun fleksibel, dengan membatasi akses yang tidak sah dan mendukung kolaborasi antar departemen. Kebijakan **ACL** dan **Firewall** yang terkonfigurasi dengan baik menjadi kunci utama dalam mendukung kebijakan ini.
 
-# 3. Bagaimana kalian membuktikan bahwa sistem kalian “benar-benar bekerja”?
+# 7. Fungsi Sistem Bekerja dengan Baik
 
 ## A. Indikator Keamanan
 Kami menetapkan tiga indikator utama untuk mengukur efektivitas firewall:
@@ -307,7 +307,7 @@ Keamanan yang ketat tidak boleh mematikan jaringan. Kami menguji ketahanan Core 
     * Normal: Ping ke Gateway = <1ms.
     * Saat Load Tinggi: Ping naik menjadi 2-5ms, masih dalam batas toleransi layak (acceptable) untuk lingkungan kampus.
 
-# 4. Bagaimana kalian merancang sistem yang tetap adaptif?
+# 8. Adaptifitas Sistem?
 Untuk menjawab tantangan skalabilitas, kami meninggalkan pendekatan konfigurasi statis manual. Kami mengadopsi arsitektur Hierarkis Modular yang didukung oleh protokol routing dinamis dan manajemen kebijakan berbasis zona. Berikut adalah 3 pilar utama desain adaptif kami:
 
 ## A. Skalabilitas Jaringan melalui Routing Dinamis (OSPF)
