@@ -29,8 +29,7 @@ Topologi jaringan dirancang dengan pendekatan **hierarchical network design** ya
 ![Masukkan Screenshot Topologi GNS3 Disini](/assets/topologi.png)
 
 
-### 1.2 
-### Skema IP Address (IP Plan)
+### 1.2 Skema IP Address (IP Plan)
 
 Kami menggunakan blok IP **10.20.0.0/16** dengan pembagian subnet sebagai berikut:
 
