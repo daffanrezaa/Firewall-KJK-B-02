@@ -26,7 +26,7 @@ Topologi jaringan dirancang dengan pendekatan **hierarchical network design** ya
 2. **Distribution Layer**: Edge Router (NAT/Internet Gateway) dan router departemen
 3. **Access Layer**: End devices (PC, Server, IoT)
 
-![Masukkan Screenshot Topologi GNS3 Disini](/assets/topologi.png)
+<img width="1097" height="749" alt="image" src="https://github.com/user-attachments/assets/712497a8-04ae-4738-9e5d-62555e331ebe" />
 
 
 ### 1.2 Skema IP Address (IP Plan)
