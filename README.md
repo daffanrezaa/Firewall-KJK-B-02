@@ -154,6 +154,5 @@ Uji coba menunjukkan bahwa serangan seperti **port scanning**, **DoS**, dan **SS
      
       <img width="528" height="84" alt="Screenshot 2025-11-23 203905" src="https://github.com/user-attachments/assets/12c1e9f4-b6c9-4f75-8083-60763749e245" />
 
-
 ## Kesimpulan
 Desain keamanan ini bertujuan menciptakan lingkungan yang aman namun fleksibel, dengan membatasi akses yang tidak sah dan mendukung kolaborasi antar departemen. Kebijakan **ACL** dan **Firewall** yang terkonfigurasi dengan baik menjadi kunci utama dalam mendukung kebijakan ini.
