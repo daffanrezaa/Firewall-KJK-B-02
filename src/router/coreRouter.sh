@@ -109,3 +109,45 @@ write
 
 # test di Core, ping Edge
 ping 10.20.99.1
+
+
+# Tambahkan Logging ke ACL (CoreRouter)
+enable
+configure terminal
+
+! Hapus ACL lama dan buat ulang dengan logging
+no ip access-list extended BLOCK_GUEST
+no ip access-list extended FILTER_MHS
+no ip access-list extended PROTECT_ADMIN
+
+! ACL untuk Guest dengan LOG
+ip access-list extended BLOCK_GUEST
+ deny ip 10.20.50.0 0.0.0.255 10.20.10.0 0.0.0.255 log
+ deny ip 10.20.50.0 0.0.0.255 10.20.20.0 0.0.0.255 log
+ deny ip 10.20.50.0 0.0.0.255 10.20.30.0 0.0.0.255 log
+ deny ip 10.20.50.0 0.0.0.255 10.20.40.0 0.0.0.255 log
+ permit ip any any
+ exit
+
+! ACL untuk Mahasiswa dengan LOG
+ip access-list extended FILTER_MHS
+ deny ip any 10.20.40.0 0.0.0.255 log
+ deny tcp any host 10.20.20.10 eq 3306 log
+ permit ip any any
+ exit
+
+! ACL untuk Akademik & Riset dengan LOG
+ip access-list extended PROTECT_ADMIN
+ deny ip any 10.20.40.0 0.0.0.255 log
+ permit ip any any
+ exit
+
+! Aktifkan console logging
+logging buffered 16384 debugging
+logging console debugging
+
+end
+write
+
+! Verifikasi ACL
+show access-lists

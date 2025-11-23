@@ -61,3 +61,40 @@ write
 
 # testing di EdgeRouter
 ping 8.8.8.8
+
+
+#perbaikan edgerouter yang tidak bisa download 
+enable
+configure terminal
+
+! 1. Pastikan interface NAT sudah benar
+interface FastEthernet0/0
+ ip nat outside
+ exit
+
+interface FastEthernet1/0
+ ip nat inside
+ exit
+
+interface FastEthernet1/1
+ ip nat inside
+ exit
+
+! 2. Buat access-list untuk NAT (izinkan semua 10.20.x.x)
+access-list 1 permit 10.20.0.0 0.0.255.255
+
+! 3. Aktifkan NAT Overload
+ip nat inside source list 1 interface FastEthernet0/0 overload
+
+end
+write
+
+## Verifikasi
+show ip nat statistics
+show run | include nat
+
+
+##Test dari Guest
+Setelah NAT diperbaiki, coba lagi di Guest-1:
+ping -c 2 8.8.8.8
+ping -c 2 google.com
