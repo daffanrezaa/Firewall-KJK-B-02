@@ -90,7 +90,7 @@ end
 write
 
 ## Verifikasi
-show ip nat statistics
+show statisticsip nat 
 show run | include nat
 
 

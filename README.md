@@ -12,7 +12,7 @@ Dokumentasi implementasi topologi jaringan kampus menggunakan GNS3, Cisco Router
 | 5027241034 | Aditya Reza Daffansyah |
 | 5027241064 | Hanif Mawla Faizi |
 | 5027241088 | I Gede Bagus Saka Sinatrya |
-| 5027241116 | Putri Joselina Silitonga | 
+| 5027241116 | Putri Joselina Silitonga |
 
 ---
 
@@ -33,24 +33,24 @@ Topologi jaringan dirancang dengan pendekatan **hierarchical network design** ya
 
 Kami menggunakan blok IP **10.20.0.0/16** dengan pembagian subnet sebagai berikut:
 
-| Zona | Subnet Network | Gateway | Konfigurasi IP |
+| Zona | Subnet Network | Gateway | Konfigurasi IP | 
 |------|----------------|---------|----------------|
-| Backbone (Router-to-Router) | 10.20.99.0/30 | - | Static |
-| Guest Network | 10.20.50.0/24 | 10.20.50.1 | DHCP |
-| Mahasiswa LAN | 10.20.10.0/24 | 10.20.10.1 | DHCP |
-| Akademik LAN | 10.20.20.0/24 | 10.20.20.1 | DHCP (PC) / Static (DB) |
-| Riset & IoT LAN | 10.20.30.0/24 | 10.20.30.1 | DHCP (PC) / Static (Server) |
-| Admin LAN | 10.20.40.0/24 | 10.20.40.1 | DHCP (PC) / Static (Server) |
+| Backbone (Router-to-Router) | 10.20.99.0/30 | - | Static | 
+| Guest Network | 10.20.50.0/24 | 10.20.50.1 | DHCP | 
+| Mahasiswa LAN | 10.20.10.0/24 | 10.20.10.1 | DHCP | 
+| Akademik LAN | 10.20.20.0/24 | 10.20.20.1 | DHCP (PC) / Static (DB) | 
+| Riset & IoT LAN | 10.20.30.0/24 | 10.20.30.1 | DHCP (PC) / Static (Server) | 
+| Admin LAN | 10.20.40.0/24 | 10.20.40.1 | DHCP (PC) / Static (Server) | 
 
 **Detail Backbone Network (Point-to-Point /30)**:
 
-| Koneksi | Network | Router 1 | Router 2 |
+| Koneksi | Network | Router 1 | Router 2 | 
 |---------|---------|----------|----------|
-| Edge ↔ Core | 10.20.99.0/30 | 10.20.99.1 (f1/0) | 10.20.99.2 (f0/0) |
-| Core ↔ Mahasiswa | 10.20.99.4/30 | 10.20.99.5 (f1/0) | 10.20.99.6 (f0/0) |
-| Core ↔ Akademik | 10.20.99.8/30 | 10.20.99.9 (f1/1) | 10.20.99.10 (f0/0) |
-| Core ↔ Research | 10.20.99.12/30 | 10.20.99.13 (f2/0) | 10.20.99.14 (f0/0) |
-| Core ↔ Admin | 10.20.99.16/30 | 10.20.99.17 (f2/1) | 10.20.99.18 (f0/0) |
+| Edge ↔ Core | 10.20.99.0/30 | 10.20.99.1 (f1/0) | 10.20.99.2 (f0/0) | 
+| Core ↔ Mahasiswa | 10.20.99.4/30 | 10.20.99.5 (f1/0) | 10.20.99.6 (f0/0) | 
+| Core ↔ Akademik | 10.20.99.8/30 | 10.20.99.9 (f1/1) | 10.20.99.10 (f0/0) | 
+| Core ↔ Research | 10.20.99.12/30 | 10.20.99.13 (f2/0) | 10.20.99.14 (f0/0) | 
+| Core ↔ Admin | 10.20.99.16/30 | 10.20.99.17 (f2/1) | 10.20.99.18 (f0/0) | 
 
 **Static IP Assignments**:
 - **Database Server (Akademik)**: 10.20.20.10
@@ -120,13 +120,13 @@ Jaringan dibagi menjadi 5 zona dengan tingkat kepercayaan berbeda:
 
 #### Access Control Matrix
 
-| Source Zone | → Mahasiswa | → Akademik | → Research | → Admin | → Internet |
+| Source Zone | → Mahasiswa | → Akademik | → Research | → Admin | → Internet | 
 |-------------|-------------|------------|------------|---------|------------|
-| **Guest** | ❌ | ❌ | ❌ | ❌ | ✅ |
-| **Mahasiswa** | ✅ | ❌ (Port 3306) | ✅ (Port 80) | ❌ | ✅ |
-| **Akademik** | ✅ | ✅ | ✅ | ❌ | ✅ |
-| **Research** | ✅ | ✅ | ✅ | ❌ | ✅ |
-| **Admin** | ✅ | ✅ | ✅ | ✅ | ✅ |
+| **Guest** | ❌ | ❌ | ❌ | ❌ | ✅ | 
+| **Mahasiswa** | ✅ | ❌ (Port 3306) | ✅ (Port 80) | ❌ | ✅ | 
+| **Akademik** | ✅ | ✅ | ✅ | ❌ | ✅ | 
+| **Research** | ✅ | ✅ | ✅ | ❌ | ✅ | 
+| **Admin** | ✅ | ✅ | ✅ | ✅ | ✅ | 
 
 #### Policy Rules
 
@@ -218,12 +218,12 @@ logging console debugging
 
 Kebijakan dirancang untuk **balance** antara keamanan dan produktivitas:
 
-| Aspek | Keamanan | Kolaborasi |
+| Aspek | Keamanan | Kolaborasi | 
 |-------|----------|------------|
-| **Guest Network** | ✅ Isolated dari internal | ✅ Dapat akses internet untuk tamu |
-| **Mahasiswa** | ✅ Tidak dapat akses data sensitif | ✅ Dapat akses research & internet |
-| **Akademik** | ✅ Protected dari Mahasiswa | ✅ Dapat kolaborasi dengan Research |
-| **Admin** | ✅ Fully protected | ✅ Full access untuk troubleshooting |
+| **Guest Network** | ✅ Isolated dari internal | ✅ Dapat akses internet untuk tamu | 
+| **Mahasiswa** | ✅ Tidak dapat akses data sensitif | ✅ Dapat akses research & internet | 
+| **Akademik** | ✅ Protected dari Mahasiswa | ✅ Dapat kolaborasi dengan Research | 
+| **Admin** | ✅ Fully protected | ✅ Full access untuk troubleshooting | 
 
 **Prinsip**: Keamanan **tidak menghambat** kolaborasi antar departemen. Akses diberikan sesuai **need-to-know basis**.
 
@@ -348,11 +348,11 @@ Kami menetapkan **tiga indikator** untuk mengukur efektivitas firewall:
 
 **1. Status Port (dari nmap scan)**
 
-| Status | Deskripsi | Interpretasi Keamanan |
+| Status | Deskripsi | Interpretasi Keamanan | 
 |--------|-----------|----------------------|
-| **Filtered** | Paket dibuang oleh ACL | ✅ **Target tercapai** - Akses ilegal diblokir |
-| **Open** | Port dapat diakses | ⚠️ Harus **hanya** untuk layanan publik (Web:80) |
-| **Closed** | Service tidak running | ℹ️ Bukan indikator firewall (host-level) |
+| **Filtered** | Paket dibuang oleh ACL | ✅ **Target tercapai** - Akses ilegal diblokir | 
+| **Open** | Port dapat diakses | ⚠️ Harus **hanya** untuk layanan publik (Web:80) | 
+| **Closed** | Service tidak running | ℹ️ Bukan indikator firewall (host-level) | 
 
 **Bukti**:
 ```bash
@@ -381,11 +381,11 @@ deny ip 10.20.50.0 0.0.0.255 10.20.40.0 0.0.0.255 log
 
 **3. Application Response (end-to-end testing)**
 
-| Skenario | Expected | Actual | Status |
+| Skenario | Expected | Actual | Status | 
 |----------|----------|--------|--------|
-| Mhs → Web Riset | HTTP 200 OK | HTTP 200 OK | ✅ |
-| Guest → Admin SSH | Timeout | Timeout | ✅ |
-| Mhs → DB:3306 | Connection refused | Connection refused | ✅ |
+| Mhs → Web Riset | HTTP 200 OK | HTTP 200 OK | ✅ | 
+| Guest → Admin SSH | Timeout | Timeout | ✅ | 
+| Mhs → DB:3306 | Connection refused | Connection refused | ✅ | 
 
 **Kesimpulan Indikator**: Sistem firewall bekerja **100% akurat** tanpa false positive/negative.
 
@@ -408,12 +408,12 @@ deny ip 10.20.50.0 0.0.0.255 10.20.40.0 0.0.0.255 log
 
 #### C. Weaknesses & Mitigasi
 
-| Kelemahan | Risiko | Mitigasi yang Diterapkan |
+| Kelemahan | Risiko | Mitigasi yang Diterapkan | 
 |-----------|--------|--------------------------|
-| ACL hanya filter IP/Port (Layer 3-4) | Application-layer attacks (SQL injection, XSS) | Service hardening: MySQL secure installation, SSH MaxAuthTries=3 |
-| Tidak ada IDS/IPS | Advanced Persistent Threats (APT) tidak terdeteksi | Logging + manual monitoring untuk anomaly detection |
-| Return traffic diizinkan | Potensi data exfiltration via established connection | Stateful filtering (Cisco IOS secara implisit track TCP state) |
-| Single point of failure (Core Router) | Jika Core Router down, semua network down | Rekomendasi: HSRP/VRRP untuk redundancy (future work) |
+| ACL hanya filter IP/Port (Layer 3-4) | Application-layer attacks (SQL injection, XSS) | Service hardening: MySQL secure installation, SSH MaxAuthTries=3 | 
+| Tidak ada IDS/IPS | Advanced Persistent Threats (APT) tidak terdeteksi | Logging + manual monitoring untuk anomaly detection | 
+| Return traffic diizinkan | Potensi data exfiltration via established connection | Stateful filtering (Cisco IOS secara implisit track TCP state) | 
+| Single point of failure (Core Router) | Jika Core Router down, semua network down | Rekomendasi: HSRP/VRRP untuk redundancy (future work) | 
 
 ### 6.2 Efisiensi Operasional
 
@@ -421,18 +421,18 @@ deny ip 10.20.50.0 0.0.0.255 10.20.40.0 0.0.0.255 log
 
 **Latency Test** (ICMP Round Trip Time):
 
-| Route | Normal | Under DoS Attack | Threshold | Status |
+| Route | Normal | Under DoS Attack | Threshold | Status | 
 |-------|--------|------------------|-----------|--------|
-| Guest → Internet | 15-20ms | 18-25ms | <50ms | ✅ Pass |
-| Mahasiswa → Web Riset | <1ms | <1ms | <5ms | ✅ Pass |
-| Admin → Any | <1ms | 2-5ms | <10ms | ✅ Pass |
+| Guest → Internet | 15-20ms | 18-25ms | <50ms | ✅ Pass | 
+| Mahasiswa → Web Riset | <1ms | <1ms | <5ms | ✅ Pass | 
+| Admin → Any | <1ms | 2-5ms | <10ms | ✅ Pass | 
 
 **Throughput** (iperf testing):
 
-| Test | Bandwidth | Packet Loss | Status |
+| Test | Bandwidth | Packet Loss | Status | 
 |------|-----------|-------------|--------|
-| Inter-VLAN routing | 900+ Mbps | 0% | ✅ Near line-rate |
-| NAT throughput | 800+ Mbps | <1% | ✅ Acceptable |
+| Inter-VLAN routing | 900+ Mbps | 0% | ✅ Near line-rate | 
+| NAT throughput | 800+ Mbps | <1% | ✅ Acceptable | 
 
 **ACL Processing Overhead**:
 - Average lookup time: <0.1ms (Cisco hardware TCAM acceleration)
@@ -457,12 +457,12 @@ Dropped Packets: 5000+ pps (by ACL, tidak membebani CPU routing)
 
 **Stress Test Analysis**:
 
-| Metric | Normal | DoS Attack | Impact | Status |
+| Metric | Normal | DoS Attack | Impact | Status | 
 |--------|--------|-----------|--------|--------|
-| CPU | 15% | 40% | +167% | ✅ Masih dibawah 80% |
-| Memory | 45% | 48% | +6.7% | ✅ Sangat minimal |
-| Latency | <1ms | 2-5ms | +400% | ✅ Masih <10ms SLA |
-| Availability | 100% | 95% | -5% | ✅ >90% SLA |
+| CPU | 15% | 40% | +167% | ✅ Masih dibawah 80% | 
+| Memory | 45% | 48% | +6.7% | ✅ Sangat minimal | 
+| Latency | <1ms | 2-5ms | +400% | ✅ Masih <10ms SLA | 
+| Availability | 100% | 95% | -5% | ✅ >90% SLA | 
 
 **Kesimpulan**: ACL yang dipasang pada **interface IN (Inbound)** sangat efisien. Paket sampah langsung dibuang sebelum membebani routing engine.
 
@@ -508,11 +508,11 @@ Result: <10 detik, seluruh kampus recognize fakultas baru ✅
 
 Alih-alih satu ACL raksasa, kami pisahkan berdasarkan **ingress interface**:
 
-| ACL Name | Applied On | Benefit |
+| ACL Name | Applied On | Benefit | 
 |----------|-----------|---------|
-| BLOCK_GUEST | f0/0 (Edge) | Ubah policy Guest tidak affect zona lain |
-| FILTER_MHS | f1/0 (Mhs) | Ubah policy Mahasiswa (misal S2 boleh DB) tanpa edit ACL lain |
-| PROTECT_ADMIN | f1/1, f2/0 (Akad, Riset) | Proteksi terpusat untuk Admin zone |
+| BLOCK_GUEST | f0/0 (Edge) | Ubah policy Guest tidak affect zona lain | 
+| FILTER_MHS | f1/0 (Mhs) | Ubah policy Mahasiswa (misal S2 boleh DB) tanpa edit ACL lain | 
+| PROTECT_ADMIN | f1/1, f2/0 (Akad, Riset) | Proteksi terpusat untuk Admin zone | 
 
 **Keuntungan**:
 - ✅ **Isolasi Perubahan**: Edit satu ACL tidak affect ACL lain (zero collateral damage)
@@ -533,13 +533,13 @@ Total waktu implementasi: **<5 menit**, tanpa menyentuh ACL lain ✅
 
 ### 6.3 Compliance & Best Practices
 
-| Standar | Implementasi | Evidence | Status |
+| Standar | Implementasi | Evidence | Status | 
 |---------|--------------|----------|--------|
-| **RFC 1918** | Private IP addressing | 10.20.0.0/16 | ✅ |
-| **NIST CSF** | Defense in Depth, Least Privilege | ACL + Service Hardening | ✅ |
-| **CIS Benchmarks** | ACL logging, SSH hardening | `log` flag enabled, MaxAuthTries=3 | ✅ |
-| **ISO 27001** | Network segmentation, access control | Zone-based ACL, 5 trust zones | ✅ |
-| **High Availability** | Redundant paths, failover | OSPF self-healing (<5s convergence) | ✅ |
+| **RFC 1918** | Private IP addressing | 10.20.0.0/16 | ✅ | 
+| **NIST CSF** | Defense in Depth, Least Privilege | ACL + Service Hardening | ✅ | 
+| **CIS Benchmarks** | ACL logging, SSH hardening | `log` flag enabled, MaxAuthTries=3 | ✅ | 
+| **ISO 27001** | Network segmentation, access control | Zone-based ACL, 5 trust zones | ✅ | 
+| **High Availability** | Redundant paths, failover | OSPF self-healing (<5s convergence) | ✅ | 
 
 ### 6.4 Rekomendasi Perbaikan
 
@@ -606,56 +606,121 @@ Berdasarkan hasil evaluasi, kami merekomendasikan peningkatan berikut:
 
 ---
 
-## 7. Kesimpulan
-Desain keamanan ini bertujuan menciptakan lingkungan yang aman namun fleksibel, dengan membatasi akses yang tidak sah dan mendukung kolaborasi antar departemen. Kebijakan **ACL** dan **Firewall** yang terkonfigurasi dengan baik menjadi kunci utama dalam mendukung kebijakan ini.
+## 7. Implementasi Intrusion Detection System (IDS) dengan Suricata
 
-### Pencapaian
+Berikut adalah panduan untuk menambahkan Sistem IDS menggunakan Suricata ke dalam topologi jaringan, melengkapi pertahanan firewall yang sudah ada.
 
-Proyek ini berhasil mengimplementasikan **secure campus network** dengan karakteristik:
+### 7.1 Tambahkan Node Baru di GNS3
 
-1. **Segmentasi Zona Efektif**: 5 trust zones dengan ACL policy yang jelas
-2. **Firewall 100% Akurat**: 10/10 test cases passed (zero false positive/negative)
-3. **Performa Optimal**: Latency <1ms normal, <5ms under attack (dalam SLA <10ms)
-4. **Resilient terhadap Serangan**: DoS attack diblokir di perimeter, server tidak terganggu
-5. **Scalable & Maintainable**: OSPF + Modular ACL memudahkan ekspansi
-6. **Balance Security-Productivity**: Kolaborasi antar departemen tetap berjalan
-7. **Compliance**: Memenuhi RFC 1918, NIST CSF, CIS Benchmarks, ISO 27001
+Agar Suricata dapat berfungsi sebagai NIDS (Network Intrusion Detection System) dengan memonitor lalu lintas jaringan, kita perlu menambahkan node khusus:
 
-### Lesson Learned
+1. Buka GNS3.
+2. Drag & Drop node **Docker** baru dari daftar perangkat (gunakan image yang sama: `nevarre/gns3-debi:latest`).
+3. Beri nama node tersebut: **Suricata-IDS**.
+4. Klik kanan pada node **Suricata-IDS** dan pilih **Configure**.
+5. Pada tab **Network**, pastikan pengaturan adapter sudah benar, umumnya `eth0` akan terdaftar sebagai interface pertama.
 
-**1. ACL Order Matters**
-- Deny rules harus sebelum permit rules
-- Salah urutan = security bypass
+### 7.2 Menghubungkan Node Suricata-IDS (PENTING)
 
-**2. Logging is Critical**
-- Tanpa log, forensik dan troubleshooting sangat sulit
-- Flag `log` pada setiap deny rule wajib
+Penempatan fisik node IDS sangat krusial agar dapat "melihat" trafik yang ingin dimonitor. Berikut beberapa opsi dan implikasinya:
 
-**3. Testing Prevents Disaster**
-- Simulasi serangan mengungkap gap yang tidak terlihat di paper
-- False positive/negative testing mencegah over/under-blocking
+*   **Opsi A (Paling Mudah - Monitoring Zona Admin):**
+    *   Hubungkan node **Suricata-IDS** ke **Switch5 (Switch Admin)**.
+    *   **Keuntungan:** Ini adalah lokasi yang logis karena Admin Zone seringkali menjadi tempat bagi server manajemen dan keamanan. Suricata akan efektif mendeteksi serangan yang ditujukan langsung ke host di dalam jaringan Admin, termasuk dirinya sendiri.
+    *   **Kekurangan:** IDS hanya akan melihat trafik broadcast dan trafik unicast yang ditujukan untuknya atau host lain di switch yang sama jika switch tersebut beroperasi sebagai hub (atau ada port mirroring). Ia tidak akan secara langsung melihat trafik dari Mahasiswa ke Akademik, misalnya.
 
-**4. Modular Design = Easier Maintenance**
-- Zone-based ACL lebih mudah diaudit dan diubah
-- Perubahan policy tidak affect zona lain
+*   **Opsi B (Lanjutan - Menggunakan Hub sebagai TAP Jaringan):**
+    *   Untuk memungkinkan IDS melihat lebih banyak trafik lintas zona (misalnya, semua trafik yang melewati CoreRouter), kita dapat memasukkan **Ethernet Hub** di GNS3.
+    *   **Langkah-langkah:**
+        1.  Hapus kabel yang menghubungkan **CoreRouter** ke **Switch5 (Admin)**.
+        2.  Drag & Drop **Ethernet Hub** dari daftar perangkat GNS3.
+        3.  Hubungkan **CoreRouter** ke Hub tersebut.
+        4.  Hubungkan **Switch5 (Admin)** ke Hub tersebut.
+        5.  Hubungkan node **Suricata-IDS** ke Hub tersebut.
+    *   **Keuntungan:** Dengan Hub, semua trafik yang melewati Hub akan disiarkan ke semua port yang terhubung, sehingga Suricata-IDS dapat "mendengar" semua trafik tersebut dan mendeteksi serangan yang relevan.
 
-**5. OSPF > Static Routing**
-- Self-healing network menghemat waktu troubleshooting
-- Auto-discovery memudahkan ekspansi
+*   **Opsi C (Port Mirroring - Tidak Tersedia di Switch GNS3 Sederhana):**
+    *   Pada perangkat keras fisik atau virtual switch yang lebih canggih, fitur **Port Mirroring (SPAN - Switched Port Analyzer)** digunakan untuk menyalin trafik dari satu atau lebih port ke port tempat IDS terhubung. Ini adalah metode ideal untuk NIDS. Namun, switch Docker GNS3 sederhana tidak mendukung fitur ini secara default.
 
-**6. Performance Under Stress Matters**
-- ACL di interface IN lebih efisien (drop sebelum routing)
-- Hardware acceleration (TCAM) penting untuk throughput
+**Rekomendasi Awal:** Untuk kemudahan setup dan pengujian awal, gunakan **Opsi A**. Lakukan serangan yang menargetkan IP di jaringan Admin atau IP Suricata-IDS itu sendiri. Jika  ingin cakupan deteksi yang lebih luas, pertimbangkan **Opsi B**.
 
-### Future Work
+### 7.3 Instalasi & Konfigurasi Suricata di Node Suricata-IDS
 
-Untuk meningkatkan keamanan di masa depan:
+Setelah node **Suricata-IDS** terhubung di GNS3:
 
-1. **Next-Generation Firewall (NGFW)**: Migrasi ke Palo Alto/Fortinet untuk application-aware filtering
-2. **Zero Trust Architecture**: Micro-segmentation dengan identity-based access
-3. **AI-Powered Threat Detection**: Machine learning untuk anomaly detection
-4. **SD-WAN Integration**: Untuk multi-site campus dengan intelligent path selection
-5. **NAC (Network Access Control)**: Device posture assessment sebelum network access
+1.  **Start** node **Suricata-IDS**.
+2.  Buka **console** (terminal) dari node **Suricata-IDS**.
+3.  **Salin file-file setup** dari folder `suricata/` di proyek lokal ke dalam node `Suricata-IDS`. kita dapat melakukannya dengan:
+    *   Menggunakan fungsi *drag-and-drop* file ke terminal GNS3 (jika didukung oleh versi GNS3).
+    *   Atau secara manual membuat file-file tersebut di dalam node menggunakan `nano` dan menyalin isinya:
+        *   `suricata/install_ids.sh`
+        *   `suricata/custom.rules`
+        *   `suricata/run_ids.sh`
+        *   `suricata/monitor_logs.sh`
+
+4.  **Berikan izin eksekusi** pada script dan jalankan instalasi:
+    ```bash
+    chmod +x install_ids.sh run_ids.sh monitor_logs.sh
+    ./install_ids.sh
+    ```
+    Script ini akan menginstal Suricata, menyalin aturan kustom, dan mengkonfigurasi file `suricata.yaml`.
+
+#### Mengenal File custom.rules
+
+File `custom.rules` adalah komponen vital yang berisi "otak" dari IDS. File ini mendefinisikan pola lalu lintas (signature) yang harus dianggap sebagai ancaman.
+
+**Contoh Rule yang Digunakan:**
+
+*   **Deteksi ICMP Flood:**
+    `alert icmp any any -> any any (msg:"⚠️ WARNING: Possible ICMP Flood Detected"; threshold: type both, track by_src, count 20, seconds 1; classtype:attempted-dos; sid:1000001; rev:1;)`
+    *   *Cara kerja:* Jika ada satu IP mengirim lebih dari 20 paket ping dalam 1 detik, Suricata akan membunyikan alarm.
+
+*   **Deteksi Port Scanning (Nmap):**
+    `alert tcp any any -> any any (msg:"⚠️ WARNING: Nmap TCP Scan Detected"; flags:S; threshold: type both, track by_src, count 30, seconds 10; ...)`
+    *   *Cara kerja:* Mendeteksi lonjakan koneksi TCP SYN (tanda awal scanning) yang tidak wajar dalam waktu singkat.
+
+*   **Deteksi SSH Brute Force:**
+    `alert tcp any any -> any 22 (msg:"🚨 CRITICAL: Potential SSH Brute Force Attack"; flags:S; threshold: type both, track by_src, count 5, seconds 30; ...)`
+    *   *Cara kerja:* Mendeteksi percobaan koneksi SSH (port 22) berulang kali (lebih dari 5 kali dalam 30 detik) dari sumber yang sama.
+
+### 7.4 Menjalankan Suricata IDS
+
+Setelah instalasi berhasil, jalankan Suricata:
+```bash
+./run_ids.sh
+```
+Suricata akan berjalan di background dan mulai memonitor trafik pada interface `eth0`. Log deteksi akan disimpan di `/var/log/suricata/fast.log`.
+
+### 7.5 Monitoring & Testing IDS (Verifikasi)
+
+Untuk memverifikasi bahwa IDS berhasil mendeteksi serangan:
+
+1.  **Jalankan Monitoring Log (Real-time):**
+    Di terminal node **Suricata-IDS**, jalankan:
+    ```bash
+    ./monitor_logs.sh
+    ```
+    Terminal ini akan menampilkan log yang masuk secara langsung (live). Biarkan terminal ini terbuka.
+
+2.  **Lakukan Serangan (Trigger):**
+    Dari node lain (misal **Guest-1** atau **PC-Mahasiswa-1**), jalankan serangan.
+    
+    *   *Contoh 1: ICMP Flood (Ping of Death)*
+        ```bash
+        ping -f -c 50 10.20.40.10
+        ```
+    *   *Contoh 2: Port Scan*
+        ```bash
+        nmap -sS -p 22,80,443,3306 10.20.40.10
+        ```
+
+3.  **Cek Hasil Deteksi:**
+    Lihat kembali ke terminal **Suricata-IDS**. Jika konfigurasi benar, kita akan melihat output log berwarna merah/kuning muncul otomatis sesaat setelah serangan dimulai.
+
+    **Contoh Output Log Sukses:**
+    ```
+    05/12/2025-10:00:01.123456  [**] [1:1000001:1] ⚠️ WARNING: Possible ICMP Flood Detected [**] [Classification: Attempted Denial of Service] [Priority: 2] {ICMP} 10.20.50.2:8 -> 10.20.40.10:0
+    ```
 
 ---
 
@@ -832,3 +897,5 @@ echo "=== Testing Complete ==="
 ---
 
 **Repository**: [github.com/daffanrezaa/Firewall-KJK-B-02](https://github.com/daffanrezaa/Firewall-KJK-B-02)
+
+```
