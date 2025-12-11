@@ -5,28 +5,28 @@
 # --------------------------------------------------------
 # 1. DETEKSI ICMP FLOOD (Ping of Death / Flood)
 # --------------------------------------------------------
-alert icmp any any -> any any (msg:"⚠️  WARNING: Possible ICMP Flood Detected"; threshold: type both, track by_src, count 20, seconds 1; classtype:attempted-dos; sid:1000001; rev:1;)
+alert icmp any any -> any any (msg:"[KJK-IDS-SURICATA] Possible ICMP Flood Detected"; threshold: type both, track by_src, count 20, seconds 1; classtype:attempted-dos; sid:1000001; rev:2;)
 
 # --------------------------------------------------------
 # 2. DETEKSI PORT SCANNING (General)
 # --------------------------------------------------------
-alert tcp any any -> any any (msg:"⚠️  WARNING: Nmap TCP Scan Detected"; flags:S; threshold: type both, track by_src, count 30, seconds 10; classtype:attempted-recon; sid:1000002; rev:1;)
+alert tcp any any -> any any (msg:"[KJK-IDS-SURICATA] General Nmap TCP Scan Detected"; flags:S; threshold: type both, track by_src, count 30, seconds 10; classtype:attempted-recon; sid:1000002; rev:2;)
 
 # --------------------------------------------------------
 # 3. DETEKSI SSH BRUTE FORCE (General)
 # --------------------------------------------------------
-alert tcp any any -> any 22 (msg:"🚨 CRITICAL: Potential SSH Brute Force Attack"; flags:S; threshold: type both, track by_src, count 5, seconds 30; classtype:attempted-user; sid:1000003; rev:1;)
+alert tcp any any -> any 22 (msg:"[KJK-IDS-SURICATA] General SSH Brute Force Attack"; flags:S; threshold: type both, track by_src, count 5, seconds 30; classtype:attempted-user; sid:1000003; rev:2;)
 
 # --------------------------------------------------------
 # 4. DETEKSI DATABASE ATTACK (MySQL)
 # --------------------------------------------------------
-alert tcp !10.20.20.0/24 any -> any 3306 (msg:"⚠️  WARNING: Unauthorized Access to MySQL Database"; flags:S; classtype:policy-violation; sid:1000004; rev:1;)
+alert tcp !10.20.20.0/24 any -> any 3306 (msg:"[KJK-IDS-SURICATA] Unauthorized Access to MySQL Database"; flags:S; classtype:policy-violation; sid:1000004; rev:2;)
 
 # --------------------------------------------------------
 # 5. DETEKSI AKSES DARI GUEST (Zone 10.20.50.x)
 # --------------------------------------------------------
-alert ip 10.20.50.0/24 any -> 10.20.40.0/24 any (msg:"🚨 CRITICAL: Guest Zone attempting access to Admin Zone"; classtype:policy-violation; sid:1000005; rev:1;)
-alert ip 10.20.50.0/24 any -> 10.20.20.0/24 any (msg:"🚨 CRITICAL: Guest Zone attempting access to Akademik Zone"; classtype:policy-violation; sid:1000006; rev:1;)
+alert ip 10.20.50.0/24 any -> 10.20.40.0/24 any (msg:"[KJK-IDS-SURICATA] Policy Violation - Guest Accessing Admin Zone"; classtype:policy-violation; sid:1000005; rev:2;)
+alert ip 10.20.50.0/24 any -> 10.20.20.0/24 any (msg:"[KJK-IDS-SURICATA] Policy Violation - Guest Accessing Akademik Zone"; classtype:policy-violation; sid:1000006; rev:2;)
 
 # ========================================================
 # NEW RULES: CASE DATA LEAKAGE (MAHASISWA -> RISET)
@@ -37,20 +37,20 @@ alert ip 10.20.50.0/24 any -> 10.20.20.0/24 any (msg:"🚨 CRITICAL: Guest Zone 
 # --------------------------------------------------------
 # Logika: Mendeteksi >20 paket SYN dalam 10 detik dari subnet Mahasiswa.
 # Rule 1: Mahasiswa -> Riset
-alert tcp 10.20.10.0/24 any -> 10.20.30.0/24 any (msg:"⚠️  WARNING: SYN Scan from Mahasiswa to Riset Network"; flags:S; threshold: type both, track by_src, count 20, seconds 10; classtype:attempted-recon; sid:2000001; rev:2;)
+alert tcp 10.20.10.0/24 any -> 10.20.30.0/24 any (msg:"[KJK-IDS-SURICATA] SYN Scan Detected - Source: Mahasiswa Target: Riset"; flags:S; threshold: type both, track by_src, count 20, seconds 10; classtype:attempted-recon; sid:2000001; rev:3;)
 # Rule 2: Mahasiswa -> Akademik
-alert tcp 10.20.10.0/24 any -> 10.20.20.0/24 any (msg:"⚠️  WARNING: SYN Scan from Mahasiswa to Akademik Network"; flags:S; threshold: type both, track by_src, count 20, seconds 10; classtype:attempted-recon; sid:2000004; rev:1;)
+alert tcp 10.20.10.0/24 any -> 10.20.20.0/24 any (msg:"[KJK-IDS-SURICATA] SYN Scan Detected - Source: Mahasiswa Target: Akademik"; flags:S; threshold: type both, track by_src, count 20, seconds 10; classtype:attempted-recon; sid:2000004; rev:2;)
 
 # --------------------------------------------------------
 # B. DETEKSI SSH BRUTE FORCE KE SERVER RISET
 # --------------------------------------------------------
 # Logika: Mendeteksi >3 percobaan koneksi SSH (SYN) ke Server Riset (10.20.30.10) dalam 30 detik.
 # Indikasi upaya login paksa.
-alert tcp 10.20.10.0/24 any -> 10.20.30.10 22 (msg:"🚨 CRITICAL: SSH Brute Force Attempt from Mahasiswa to Riset Server"; flags:S; threshold: type both, track by_src, count 3, seconds 30; classtype:attempted-user; sid:2000002; rev:1;)
+alert tcp 10.20.10.0/24 any -> 10.20.30.10 22 (msg:"[KJK-IDS-SURICATA] SSH Brute Force Attempt on Riset Server"; flags:S; threshold: type both, track by_src, count 3, seconds 30; classtype:attempted-user; sid:2000002; rev:2;)
 
 # --------------------------------------------------------
 # C. DETEKSI DATA EXFILTRATION (HTTP) DARI SERVER RISET
 # --------------------------------------------------------
 # Logika: Mendeteksi respon HTTP 200 OK dari Server Riset ke Mahasiswa yang mengindikasikan transfer file sukses.
 # Filter konten biner atau file terenkripsi sulit tanpa SSL decryption, jadi kita monitor flow HTTP sukses.
-alert http 10.20.30.10 any -> 10.20.10.0/24 any (msg:"🚨 CRITICAL: Suspicious File Transfer / Data Exfiltration from Riset Server"; flow:established,from_server; http.response_code; content:"200"; classtype:policy-violation; sid:2000003; rev:1;)
+alert http 10.20.30.10 any -> 10.20.10.0/24 any (msg:"[KJK-IDS-SURICATA] Potential Data Exfiltration - Riset Server HTTP 200 OK"; flow:established,from_server; http.response_code; content:"200"; classtype:policy-violation; sid:2000003; rev:2;)

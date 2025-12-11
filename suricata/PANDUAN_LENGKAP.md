@@ -69,16 +69,16 @@ Salin (Copy-Paste) teks di bawah ini ke dalam file `custom.rules` tersebut. Past
 # 1. DETEKSI SYN SCAN DARI MAHASISWA
 # Mencegat scanning ke Riset & Akademik
 # Logika: >20 paket SYN dalam 10 detik = Scanning.
-alert tcp 10.20.10.0/24 any -> 10.20.30.0/24 any (msg:"⚠️  WARNING: SYN Scan from Mahasiswa to Riset Network"; flags:S; threshold: type both, track by_src, count 20, seconds 10; classtype:attempted-recon; sid:2000001; rev:2;)
-alert tcp 10.20.10.0/24 any -> 10.20.20.0/24 any (msg:"⚠️  WARNING: SYN Scan from Mahasiswa to Akademik Network"; flags:S; threshold: type both, track by_src, count 20, seconds 10; classtype:attempted-recon; sid:2000004; rev:1;)
+alert tcp 10.20.10.0/24 any -> 10.20.30.0/24 any (msg:"[KJK-IDS-SURICATA] SYN Scan Detected - Source: Mahasiswa Target: Riset"; flags:S; threshold: type both, track by_src, count 20, seconds 10; classtype:attempted-recon; sid:2000001; rev:3;)
+alert tcp 10.20.10.0/24 any -> 10.20.20.0/24 any (msg:"[KJK-IDS-SURICATA] SYN Scan Detected - Source: Mahasiswa Target: Akademik"; flags:S; threshold: type both, track by_src, count 20, seconds 10; classtype:attempted-recon; sid:2000004; rev:2;)
 
 # 2. DETEKSI SSH BRUTE FORCE
 # Logika: >3 percobaan koneksi baru ke port 22 dalam 30 detik.
-alert tcp 10.20.10.0/24 any -> 10.20.30.10 22 (msg:"🚨 CRITICAL: SSH Brute Force Attempt from Mahasiswa to Riset Server"; flags:S; threshold: type both, track by_src, count 3, seconds 30; classtype:attempted-user; sid:2000002; rev:1;)
+alert tcp 10.20.10.0/24 any -> 10.20.30.10 22 (msg:"[KJK-IDS-SURICATA] SSH Brute Force Attempt on Riset Server"; flags:S; threshold: type both, track by_src, count 3, seconds 30; classtype:attempted-user; sid:2000002; rev:2;)
 
 # 3. DETEKSI DATA EXFILTRATION (HTTP)
 # Logika: Server Riset mengirim respon HTTP 200 OK ke Mahasiswa (File berhasil didapat).
-alert http 10.20.30.10 any -> 10.20.10.0/24 any (msg:"🚨 CRITICAL: Suspicious File Transfer / Data Exfiltration from Riset Server"; flow:established,from_server; http.response_code; content:"200"; classtype:policy-violation; sid:2000003; rev:1;)
+alert http 10.20.30.10 any -> 10.20.10.0/24 any (msg:"[KJK-IDS-SURICATA] Potential Data Exfiltration - Riset Server HTTP 200 OK"; flow:established,from_server; http.response_code; content:"200"; classtype:policy-violation; sid:2000003; rev:2;)
 ```
 *Simpan file dengan `Ctrl+O`, `Enter`, lalu `Ctrl+X`.*
 
@@ -140,7 +140,7 @@ Kita akan scan Server Riset & Akademik.
     ```bash
     nmap -sS -p 3306,80 10.20.20.10
     ```
-    *Lihat ke terminal IDS: Harus muncul alert "WARNING: SYN Scan..."*
+    *Lihat ke terminal IDS: Harus muncul alert "[KJK-GRP2] SYN Scan Detected..."*
 
 **Skenario B: SSH Brute Force**
 Kita coba paksa masuk SSH ke Server Riset.
@@ -153,7 +153,7 @@ Kita coba paksa masuk SSH ke Server Riset.
     ```bash
     hydra -l admin -P passlist.txt ssh://10.20.30.10 -t 4 -V
     ```
-    *Lihat ke terminal IDS: Harus muncul alert "CRITICAL: SSH Brute Force..."*
+    *Lihat ke terminal IDS: Harus muncul alert "[KJK-GRP2] SSH Brute Force Attempt..."*
 
 **Skenario C: Pencurian Data (Exfiltration)**
 Kita coba download file rahasia dari Server Riset.
@@ -166,11 +166,19 @@ Kita coba download file rahasia dari Server Riset.
     ```bash
     wget http://10.20.30.10/
     ```
-    *Lihat ke terminal IDS: Harus muncul alert "CRITICAL: Suspicious File Transfer..."*
+    *Lihat ke terminal IDS: Harus muncul alert "[KJK-GRP2] Potential Data Exfiltration..."*
 
 ---
 
-## 6. Selesai
+## 6. Selesai (Analisis Hasil)
 
-Jika ketiga alert muncul di terminal IDS, berarti tugas Anda **BERHASIL** 100%.
+Jika implementasi berhasil, pada terminal IDS akan muncul output log seperti ini:
+
+```text
+12/11/2025-10:15:32.458901  [**] [1:2000001:3] [KJK-IDS-SURICATA] SYN Scan Detected - Source: Mahasiswa Target: Riset [**] [Classification: Attempted Information Leak] [Priority: 2] {TCP} 10.20.10.2:48912 -> 10.20.30.10:80
+12/11/2025-10:16:15.120344  [**] [1:2000004:2] [KJK-IDS-SURICATA] SYN Scan Detected - Source: Mahasiswa Target: Akademik [**] [Classification: Attempted Information Leak] [Priority: 2] {TCP} 10.20.10.2:49105 -> 10.20.20.10:3306
+12/11/2025-10:18:05.671239  [**] [1:2000002:2] [KJK-IDS-SURICATA] SSH Brute Force Attempt on Riset Server [**] [Classification: Attempted Administrator Privilege Gain] [Priority: 1] {TCP} 10.20.10.2:50231 -> 10.20.30.10:22
+12/11/2025-10:20:45.992110  [**] [1:2000003:2] [KJK-IDS-SURICATA] Potential Data Exfiltration - Riset Server HTTP 200 OK [**] [Classification: Potential Corporate Privacy Violation] [Priority: 1] {TCP} 10.20.30.10:80 -> 10.20.10.2:51002
+```
+
 Jangan lupa screenshot bukti alert tersebut untuk laporan.
